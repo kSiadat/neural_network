@@ -6,7 +6,7 @@ from _general_2.layer_normal import Layer
 class Network:
     def __init__(self, shape, activator, random_range, load_path=None):
         if load_path is None:
-            self.layer = [Layer(shape[x], shape[x-1], activator[x-1], random_range)  for x in range(1, len(shape))]
+            self.layer = [Layer(shape[x], shape[x-1], activator[x-1], random_range[x-1])  for x in range(1, len(shape))]
         else:
             self.load(load_path)
 
@@ -71,18 +71,13 @@ class Network:
         return answer
 
     @staticmethod
-    def get_sample(data, label, size, do_label=True):
-        indexes = random.randint(0, size, [size])
-        data_sample = data[indexes]
-        if do_label:
-            label_sample = label[indexes]
-            return data_sample, label_sample
-        return data_sample
+    def sample_indexes(data_size, sample_size):
+        return random.randint(0, data_size, [sample_size])
 
-    def batch_epoch(self, data, label, sample_size, rate):
-        data_sample, label_sample = Network.get_sample(data, label, sample_size)
-        return self.epoch(data_sample, label_sample, rate)
+    def batch_epoch(self, data, label, rate, sample_size):
+        indexes = Network.sample_indexes(len(data), sample_size)
+        return self.epoch(data[indexes], label[indexes], rate), indexes
 
     def batch_epoch_test(self, data, sample_size):
-        data_sample = Network.get_sample(data, None, sample_size, False)
-        return self.epoch_test(data_sample)
+        indexes = Network.sample_indexes(len(data), sample_size)
+        return self.epoch(data[indexes]), indexes

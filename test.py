@@ -17,13 +17,16 @@ def print_test(x, data, label):
     average = individual.sum() / len(data)
     print(f"{x + 1}:\t{round(average, 4)}\t{[round(X[0], 4)  for X in individual]}")
 
+if False: # xor
+    network = Network([2, 2, 1], ["relu", "sigmoid"], [0.5, 0.5])
+    #network = Network(None, None, None, "test_4")
 
-network = Network([2, 2, 1], ["relu", "sigmoid"], [-0.5, 0.5])
-#network = Network(None, None, None, "test_4")
+    print_test(-1, data, human_label)
+    for x in range(epochs):
+        network.online_epoch(data, label, rate)
+        if (x + 1) % interval == 0:
+            print_test(x, data, human_label)
+    network.save("test_4")
 
-print_test(-1, data, human_label)
-for x in range(epochs):
-    network.online_epoch(data, label, rate)
-    if (x + 1) % interval == 0:
-        print_test(x, data, human_label)
-network.save("test_4")
+network = Network([2, 2, 1], ["relu", "relu"], [1, 1])
+network.batch_epoch(data, label, rate, 2)

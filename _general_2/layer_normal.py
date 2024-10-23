@@ -7,8 +7,8 @@ class Layer:
     def __init__(self, size, inp_size, activator, random_range, load_text=None):
         if load_text is None:
             generator = random.default_rng()
-            self.weight = generator.uniform(random_range[0], random_range[1], [size, inp_size])
-            self.bias = generator.uniform(random_range[0], random_range[1], [size])
+            self.weight = generator.uniform(-random_range, random_range, [size, inp_size])
+            self.bias = generator.uniform(-random_range, random_range, [size])
             self.set_activator(activator)
         else:
             self.load(load_text)

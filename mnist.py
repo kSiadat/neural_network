@@ -1,7 +1,8 @@
 from numpy import logical_and
 
 from mnist.mnist_reader import Mnist_reader
-from _general.network import Network
+#from _general.network import Network
+from _general_2.network import Network
 
 
 def error_rate(answers, labels):
@@ -25,10 +26,11 @@ test_img = test_img[:100]
 test_lab = test_lab[:100]
 
 #network = Network([784, 350, 10], ["leaky_relu", "sigmoid"])
-network = Network(path="auto_save")
+#network = Network(path="auto_save")
+network = Network([784, 350, 10], ["leaky_relu", "sigmoid"], [-0.05, 0.05])
 rate = 0.0001
-epochs = 10000
-interval = 10
+epochs = 100
+interval = 1
 test_interval = 100
 sample_size = 20
 
