@@ -1,6 +1,6 @@
 from numpy import absolute, array
 
-from _general_2.network import Network
+from _general.network import Network
 
 
 data = array([[0, 0], [0, 1], [1, 0], [1, 1]])
@@ -23,7 +23,7 @@ def print_test(x, data, label):
     print(f"{x + 1}:\t{round(average, 4)}\t{[round(X[0], 4)  for X in individual]}")
 
 if load:
-    network = Network(None, None, None, in_path)
+    network = Network(None, None, None, load_path)
 else:
     network = Network([2, 2, 1], ["relu", "sigmoid"], [0.5, 0.5])
 
@@ -33,4 +33,5 @@ for x in range(epochs):
     if (x + 1) % interval == 0:
         print_test(x, data, human_label)
 
-network.save(save_path)
+if save:
+    network.save(save_path)

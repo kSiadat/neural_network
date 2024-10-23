@@ -1,6 +1,6 @@
 from numpy import absolute, array
 
-from _general_2.network import Network
+from _general.network import Network
 
 
 data = array([[0, 0], [0, 1], [1, 0], [1, 1]])
