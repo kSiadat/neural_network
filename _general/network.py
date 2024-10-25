@@ -1,17 +1,20 @@
 from numpy import empty, random
 
-from _general_2.layer_normal import Layer
+from .layer_normal import Layer
+from .loss_functions import lookup_function, lookup_name
 
 
 class Network:
-    def __init__(self, shape, activator, random_range, load_path=None):
+    def __init__(self, shape, activator, random_range, loss_func, load_path=None):
         if load_path is None:
             self.layer = [Layer(shape[x], shape[x-1], activator[x-1], random_range[x-1])  for x in range(1, len(shape))]
+            self.loss_function, self.d_loss_function = lookup_function(loss_func)
         else:
             self.load(load_path)
 
     def save(self, path):
-        text = "\n".join([X.save()  for X in self.layer])
+        loss_text = lookup_name(self.loss_function) + "\n"
+        text = loss_text + "\n".join([X.save()  for X in self.layer])
         with open(f"{path}.txt", "w") as file:
             file.write(text)
 
@@ -19,7 +22,8 @@ class Network:
         with open(f"{path}.txt", "r") as file:
             text = file.read()
         text = text.split("\n")
-        self.layer = [Layer(None, None, None, None, X)  for X in text]
+        self.loss_function, self.d_loss_function = lookup_function(text[0])
+        self.layer = [Layer(None, None, None, None, X)  for X in text[1:]]
 
     def display(self, meta=True, main=False, output=False, d=False):
         for x in range(len(self.layer)):
@@ -48,7 +52,8 @@ class Network:
         for x in range(size):
             self.evaluate(data[x])
             answer[x] = self.get_output()
-            self.backpropagate(data[x], self.get_output() - label[x])
+            d_loss = self.d_loss_function(label[x], answer[x])
+            self.backpropagate(data[x], d_loss)
         self.adjust(rate / size)
         return answer
 
@@ -66,7 +71,8 @@ class Network:
         for x in range(size):
             self.evaluate(data[x])
             answer[x] = self.get_output()
-            self.backpropagate(data[x], answer[x] - label[x])
+            d_loss = self.d_loss_function(label[x], answer[x])
+            self.backpropagate(data[x], d_loss)
             self.adjust(rate)
         return answer
 

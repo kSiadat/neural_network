@@ -4,7 +4,6 @@ from math import e
 # activators take z as input
 # d_activators take a as input, essentially a = activator(z)
 
-
 def relu(z):
     if z > 0:
         return z
