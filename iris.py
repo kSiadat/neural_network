@@ -22,7 +22,7 @@ def load_mean_std(path):
     return mean, std
 
 
-mean_std_path = "iris//mean_std"
+mean_std_path = "iris\\mean_std"
 text_class = {
     "Iris-setosa":     [1, 0, 0],
     "Iris-versicolor": [0, 1, 0],

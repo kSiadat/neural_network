@@ -6,13 +6,13 @@ from struct import unpack
 
 
 class Mnist_reader:
-    def __init__(self, train_image_path, train_label_path, test_image_path, test_label_path):
-        self.train_image_path = train_image_path
-        self.train_label_path = train_label_path
-        self.test_image_path = test_image_path
-        self.test_label_path = test_label_path
+    def __init__(self, main_path):
+        self.train_image_path = f"{main_path}\\train-images.idx3-ubyte"
+        self.train_label_path = f"{main_path}\\train-labels.idx1-ubyte"
+        self.test_image_path = f"{main_path}\\t10k-images.idx3-ubyte"
+        self.test_label_path = f"{main_path}\\t10k-labels.idx1-ubyte"
 
-    def read_pair(self, image_path, label_path):
+    def read_pair(self, image_path, label_path, flat=True):
         labels = []
         with open(label_path, "rb") as file:
             magic, size, = unpack(">II", file.read(8))
@@ -28,14 +28,17 @@ class Mnist_reader:
             if magic != 2051:
                 raise ValueError(f"Magic number mismatch, expected 2051 got {magic}")
             image_data = asarray(py_array("B", file.read()))
-        images = image_data.reshape(len(image_data) // 784, 784)#28, 28)
+        if flat:
+            images = image_data.reshape(len(image_data) // 784, 784)
+        else:
+            images = image_data.reshape([len(image_data) // 784, 28, 28])
         images = images / 255
         
         return images, labels
 
-    def read_all(self):
-        train_image, train_label = self.read_pair(self.train_image_path, self.train_label_path)
-        test_image, test_label = self.read_pair(self.test_image_path, self.test_label_path)
+    def read_all(self, flat=True):
+        train_image, train_label = self.read_pair(self.train_image_path, self.train_label_path, flat)
+        test_image, test_label = self.read_pair(self.test_image_path, self.test_label_path, flat)
         return train_image, train_label, test_image, test_label
 
 
@@ -59,10 +62,6 @@ def show_random_images(amount, image_set, label_set):
 
 if __name__ == "__main__":
     main_path = "data"
-    train_image_path = f"{main_path}\\train-images.idx3-ubyte"
-    train_label_path = f"{main_path}\\train-labels.idx1-ubyte"
-    test_image_path = f"{main_path}\\t10k-images.idx3-ubyte"
-    test_label_path = f"{main_path}\\t10k-labels.idx1-ubyte"
-    reader = Mnist_reader(train_image_path, train_label_path, test_image_path, test_label_path)
-    train_img, train_lab, test_img, test_lab = reader.read_all()
+    reader = Mnist_reader(main_path)
+    train_img, train_lab, test_img, test_lab = reader.read_all(False)
     show_random_images(10, train_img, train_lab)
