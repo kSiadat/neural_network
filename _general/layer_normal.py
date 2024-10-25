@@ -1,6 +1,6 @@
 from numpy import array, empty, random, zeros
 
-from .activators import activator_lookup
+from .activators import lookup_activator, lookup_name
 
 
 class Layer:
@@ -9,22 +9,10 @@ class Layer:
             generator = random.default_rng()
             self.weight = generator.uniform(-random_range, random_range, [size, inp_size])
             self.bias = generator.uniform(-random_range, random_range, [size])
-            self.set_activator(activator)
+            self.activator, self.d_activator = lookup_activator(activator)
         else:
             self.load(load_text)
         self.reset_d()
-        
-    def set_activator(self, name):
-        for X in activator_lookup:
-            if name == X[0]:
-                self.activator = X[1]
-                self.d_activator = X[2]
-                break
-
-    def get_activator_text(self):
-        for X in activator_lookup:
-            if self.activator is X[1]:
-                return X[0]
 
     def reset_d(self):
         self.d_weight = zeros(self.weight.shape)
@@ -37,10 +25,10 @@ class Layer:
         data_b = array([float(X)  for X in text[3]])
         self.weight = data_w.reshape(data_s)
         self.bias = data_b
-        self.set_activator(text[0][0])
+        self.activator, self.d_activator = lookup_activator(text[0][0])
 
     def save(self):
-        text_a = self.get_activator_text()
+        text_a = lookup_name(self.activator)
         text_s = ",".join([str(X)  for X in self.weight.shape])
         text_w = ",".join([str(X)  for X in self.weight.flatten()])
         text_b = ",".join([str(X)  for X in self.bias.copy()])
@@ -49,7 +37,7 @@ class Layer:
     def display(self, meta=True, main=False, output=False, d=False):
         text = ""
         if meta:
-            text += f"weight shape: {self.weight.shape}\nbias shape: {self.bias.shape}\nactivator: {self.get_activator_text()}\n"
+            text += f"weight shape: {self.weight.shape}\nbias shape: {self.bias.shape}\nactivator: {lookup_name(self.activator)}\n"
         if main:
             text += f"weights:\n{self.weight}\nbiases:\n{self.bias}\n"
         if output:

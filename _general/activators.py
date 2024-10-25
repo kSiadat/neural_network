@@ -1,9 +1,6 @@
 from math import e
 
 
-# activators take z as input
-# d_activators take a as input, essentially a = activator(z)
-
 def relu(z):
     if z > 0:
         return z
@@ -39,9 +36,22 @@ def d_nothing(a):
     return 1
 
 
-activator_lookup = [
-    ["relu", relu, d_relu],
-    ["leaky_relu", leaky_relu, d_leaky_relu],
-    ["sigmoid", sigmoid, d_sigmoid],
-    ["nothing", nothing, d_nothing],
-]
+name_to_func = {
+        "relu":       [relu,       d_relu],
+        "leaky_relu": [leaky_relu, d_leaky_relu],
+        "sigmoid":    [sigmoid,    d_sigmoid],
+        "nothing":    [nothing,    d_nothing],
+        }
+
+func_to_name = {
+        relu:       "relu",
+        leaky_relu: "leaky_relu",
+        sigmoid:    "sigmoid",
+        nothing:    "nothing",
+        }
+
+def lookup_activator(name):
+    return name_to_func[name][0], name_to_func[name][1]
+
+def lookup_name(activator):
+    return func_to_name[activator]
