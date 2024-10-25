@@ -1,4 +1,4 @@
-from numpy import exp, log, square
+from numpy import empty, exp, log, square
 
 
 def squared(target, guess):
@@ -7,15 +7,21 @@ def squared(target, guess):
 def d_squared(target, guess):
     return guess - target
 
+def sub_softmax(x):
+    exp_arr = exp(x)
+    if len(x.shape) == 1:
+        return exp_arr / exp_arr.sum()
+    elif len(x.shape) == 2:
+        new = empty(x.shape)
+        for x in range(len(x)):
+            new[x] = exp_arr[x] / exp_arr[x].sum()
+        return new
+
 def softmax(target, guess):
-    exp_arr = exp(guess)
-    exp_arr = exp_arr / exp_arr.sum()
-    return -target * log(exp_arr)
+    return -target * log(sub_softmax(guess))
 
 def d_softmax(target, guess):
-    exp_arr = exp(guess)
-    exp_arr = exp_arr / exp_arr.sum()
-    return exp_arr - target
+    return sub_softmax(guess) - target
 
 
 name_to_func = {
