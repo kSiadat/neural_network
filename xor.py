@@ -12,9 +12,9 @@ epochs = 10000
 interval = 1000
 
 load = False
-load_path = "xor_auto-save"
+load_path = "xor"
 save = True
-save_path = load_path
+save_path = "xor_auto-save"
 
 def print_test(x, data, label):
     answer = network.epoch_test(data)
