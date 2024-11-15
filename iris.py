@@ -48,22 +48,28 @@ test_label = concatenate((all_label[40:50], all_label[90:100], all_label[140:150
 
 
 # settings
-train = False
+train = True
 
 rate = 0.05
 epochs = 5000
 interval = 1000
 
-load = True
+load = False
 load_path = "iris"
-save = True
+save = False
 save_path = "iris_auto-save"
 # end settings
 
 if load:
-    network = Network(None, None, None, None, load_path)
+    network = Network(None, None, load_path)
+    #network = Network(None, None, None, None, load_path)
 else:
-    network = Network([4, 6, 3], ["relu", "nothing"], [0.25, 0.2], "softmax")
+    layer_data = [
+        ["normal", [4, 6, "relu",   0.25]],
+        ["normal", [6, 3, "nothing", 0.2]],
+        ]
+    network = Network(layer_data, "softmax")
+    #network = Network([4, 6, 3], ["relu", "nothing"], [0.25, 0.2], "softmax")
 
 if train:
     test_loss, test_error = full_test()
@@ -82,4 +88,8 @@ if train:
 
 else:
     test_loss, test_error = full_test()
-    print(f"0:\t{test_error.round(2)}\t{test_loss.mean().round(4)}\t{test_loss.mean(axis=0).round(4)}")
+    print(f"test:\t{test_error.round(2)}\t{test_loss.mean().round(4)}\t{test_loss.mean(axis=0).round(4)}")
+    answer = network.epoch_test(train_data)
+    loss = network.loss_function(train_label, answer)
+    error = error_rate(train_label, answer)
+    print(f"train:\t{error.round(2)}\t{loss.mean().round(4)}\t{loss.mean(axis=0).round(4)}")

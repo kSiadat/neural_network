@@ -1,11 +1,19 @@
 from numpy import empty, random
 
 from .layer_normal import Layer
+from .lookup_layer import lookup_class
 from .loss_functions import lookup_function, lookup_name
 
 
 class Network:
-    def __init__(self, shape, activator, random_range, loss_func, load_path=None):
+    def __init__(self, layer_data, loss_func, load_path=None):
+        if load_path is None:
+            self.layer = [lookup_class(X[0])(*X[1])  for X in layer_data]
+            self.loss_function, self.d_loss_function = lookup_function(loss_func)
+        else:
+            self.load(load_path)
+
+    def __init__1(self, shape, activator, random_range, loss_func, load_path=None):
         if load_path is None:
             self.layer = [Layer(shape[x], shape[x-1], activator[x-1], random_range[x-1])  for x in range(1, len(shape))]
             self.loss_function, self.d_loss_function = lookup_function(loss_func)

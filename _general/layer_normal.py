@@ -4,11 +4,11 @@ from .activators import lookup_activator, lookup_name
 
 
 class Layer:
-    def __init__(self, size, inp_size, activator, random_range, load_text=None):
+    def __init__(self, inp_size, size, activator, random_range, load_text=None):
         if load_text is None:
             generator = random.default_rng()
             self.weight = generator.uniform(-random_range, random_range, [size, inp_size])
-            self.bias = generator.uniform(-random_range, random_range, [size])
+            self.bias   = generator.uniform(-random_range, random_range, [size])
             self.activator, self.d_activator = lookup_activator(activator)
         else:
             self.load(load_text)

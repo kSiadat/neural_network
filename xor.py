@@ -23,9 +23,15 @@ def print_test(x, data, label):
     print(f"{x + 1}:\t{round(average, 4)}\t{[round(X[0], 4)  for X in individual]}")
 
 if load:
-    network = Network(None, None, None, None, load_path)
+    network = Network(None, None, load_path)
+    #network = Network(None, None, None, None, load_path)
 else:
-    network = Network([2, 2, 1], ["relu", "sigmoid"], [0.5, 0.5], "squared")
+    layer_data = [
+        ["normal", [2, 2, "relu",    0.5]],
+        ["normal", [2, 1, "sigmoid", 0.5]],
+        ]
+    network = Network(layer_data, "squared")
+    #network = Network([2, 2, 1], ["relu", "sigmoid"], [0.5, 0.5], "squared")
 
 print_test(-1, data, human_label)
 for x in range(epochs):
