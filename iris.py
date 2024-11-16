@@ -54,7 +54,7 @@ rate = 0.05
 epochs = 5000
 interval = 1000
 
-load = False
+load = True
 load_path = "iris"
 save = False
 save_path = "iris_auto-save"
@@ -62,14 +62,12 @@ save_path = "iris_auto-save"
 
 if load:
     network = Network(None, None, load_path)
-    #network = Network(None, None, None, None, load_path)
 else:
     layer_data = [
         ["normal", [4, 6, "relu",   0.25]],
         ["normal", [6, 3, "nothing", 0.2]],
         ]
     network = Network(layer_data, "softmax")
-    #network = Network([4, 6, 3], ["relu", "nothing"], [0.25, 0.2], "softmax")
 
 if train:
     test_loss, test_error = full_test()

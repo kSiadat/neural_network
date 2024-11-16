@@ -16,3 +16,11 @@ def lookup_class(name):
 
 def lookup_name(clas):
     return class_to_name[clas]
+
+def text_init(name, text):
+    if lookup_class(name) is Layer:
+        return Layer(None, None, None, None, text)
+    elif lookup_class(name) is Layer_converter:
+        return Layer(None, None, text)
+    elif lookup_class(name) is Layer_convolutional:
+        return Layer(None, None, None, None, text)

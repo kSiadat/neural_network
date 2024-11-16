@@ -1,7 +1,7 @@
 from numpy import empty, random
 
 from .layer_normal import Layer
-from .lookup_layer import lookup_class
+from .lookup_layer import lookup_class, lookup_name as lookup_class_name, text_init
 from .loss_functions import lookup_function, lookup_name
 
 
@@ -13,16 +13,18 @@ class Network:
         else:
             self.load(load_path)
 
+    """
     def __init__1(self, shape, activator, random_range, loss_func, load_path=None):
         if load_path is None:
             self.layer = [Layer(shape[x], shape[x-1], activator[x-1], random_range[x-1])  for x in range(1, len(shape))]
             self.loss_function, self.d_loss_function = lookup_function(loss_func)
         else:
             self.load(load_path)
+    """
 
     def save(self, path):
         loss_text = lookup_name(self.loss_function) + "\n"
-        text = loss_text + "\n".join([X.save()  for X in self.layer])
+        text = loss_text + "\n".join([f"{lookup_class_name(type(X))}/{X.save()}"  for X in self.layer])
         with open(f"{path}.txt", "w") as file:
             file.write(text)
 
@@ -31,7 +33,8 @@ class Network:
             text = file.read()
         text = text.split("\n")
         self.loss_function, self.d_loss_function = lookup_function(text[0])
-        self.layer = [Layer(None, None, None, None, X)  for X in text[1:]]
+        text = [X.split("/")  for X in text[1:]]
+        self.layer = [text_init(*X)  for X in text]
 
     def display(self, meta=True, main=False, output=False, d=False):
         for x in range(len(self.layer)):

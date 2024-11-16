@@ -33,20 +33,18 @@ test_sample_size = 0
 
 load = True
 load_path = "mnist"
-save = True
+save = False
 save_path = "mnist_auto-save"
 # end settings
 
 if load:
     network = Network(None, None, load_path)
-    #network = Network(None, None, None, None, load_path)
 else:
     layer_data = [
         ["normal", [784, 350, "relu", 1]],
         ["normal", [350, 10, "nothing", 1]],
         ]
     network = Network(layer_data, "softmax")
-    #network = Network([784, 350, 10], ["relu", "nothing"], [1, 1], "softmax")
 
 if train:
     if test_sample_size > 0:
