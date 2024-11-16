@@ -11,13 +11,17 @@ class Layer_converter(Layer):
             self.load(load_text)
 
     def reset_d(self):
-        pass
+        return None
 
     def load(self, text):
-        pass
+        text = [[int(Y)  for Y in X.split(",")]  for X in text.split("|")]
+        self.inp_shape = array(text[0])
+        self.out_shape = array(text[1])
 
     def save(self):
-        pass
+        text_i = ",".join([str(X)  for X in self.inp_shape])
+        text_o = ",".join([str(X)  for X in self.out_shape])
+        return f"{text_i}|{text_o}"
 
     def display(self):
         print(f"{self.inp_shape} -> {self.out_shape}")
@@ -26,10 +30,10 @@ class Layer_converter(Layer):
         return inp.reshape(self.out_shape)
 
     def backpropagate(self, inp, gradient):
-        pass#### think about how gradients are reshaped
+        return gradient.reshape(inp.shape)
 
     def get_all_gradients(self):
-        pass##### same as above
+        return None
 
     def adjust(self, rate):
-        pass
+        return None
