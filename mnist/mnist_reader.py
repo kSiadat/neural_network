@@ -1,3 +1,5 @@
+# Most of the code in this file taken from https://www.kaggle.com/code/hojjatk/read-mnist-dataset
+
 from array import array as py_array
 from matplotlib import pyplot as plt
 from numpy import array, asarray, reshape, zeros
