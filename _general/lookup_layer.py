@@ -23,4 +23,4 @@ def text_init(name, text):
     elif lookup_class(name) is Layer_converter:
         return Layer(None, None, text)
     elif lookup_class(name) is Layer_convolutional:
-        return Layer(None, None, None, None, text)
+        return Layer(None, None, None, None, None, None, text)

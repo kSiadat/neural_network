@@ -1,4 +1,4 @@
-from numpy import random, zeros
+from numpy import array, random, zeros
 
 from .activators import lookup_activator, lookup_name
 #from .layer_lookup import lookup_name as lookup_class_name
@@ -6,24 +6,23 @@ from .layer_normal import Layer
 
 
 class Layer_convolutional(Layer):
-    def __init__(self, inp_shape, filter_param, activator, random_range, load_text=None):
+    def __init__(self, activator, inp_shape, filter_shape, stride, padding, random_range, load_text=None):
         if load_text is None:
-            self.shape    = filter_param[0]
-            self.stride   = filter_param[1]
-            self.padding  = filter_param[2]
-            self.quantity = filter_param[3]
+            self.shape    = filter_shape # format: [quantity, x, y, z]
+            self.stride   = stride
+            self.padding  = padding
 
             self.activator, self.d_activator = lookup_activator(activator)
             generator = random.default_rng()
-            self.weight = generator.uniform(-random_range, random_range, [self.quantity, self.shape[0], self.shape[1], self.shape[2]])
-            self.bias   = generator.uniform(-random_range, random_range, [self.quantity])
+            self.weight = generator.uniform(-random_range, random_range, self.shape)
+            self.bias   = generator.uniform(-random_range, random_range, [self.shape[0]])
 
-            self.inp_shape = inp_shape
-            self.out_shape = [
-                ((inp_shape[0] - self.shape[0] + (2 * self.padding)) / self.stride) + 1,
-                ((inp_shape[1] - self.shape[1] + (2 * self.padding)) / self.stride) + 1,
-                self.quantity,
-                ]
+            #self.inp_shape = inp_shape
+            self.out_shape = array([
+                ((inp_shape[0] - self.shape[1] + (2 * padding)) / stride) + 1,
+                ((inp_shape[1] - self.shape[2] + (2 * padding)) / stride) + 1,
+                self.shape[0],
+                ])
         else:
             self.load(load_text)
         self.reset_d()
@@ -32,16 +31,30 @@ class Layer_convolutional(Layer):
         self.d_weight = zeros(self.weight.shape)
         self.d_bias = zeros(self.bias.shape)
 
-    #def load(self, text):
-    #    pass
+    def load(self, text):
+        text = [X.split(",")  for X in text.split("|")]
+        data_s = array([int(X)  for X in text[1]])
+        data_t = int(text[2][0])
+        data_p = int(text[3][0])
+        data_o = array([float(X)  for X in text[4]])
+        data_w = array([float(X)  for X in text[5]])
+        data_b = array([float(X)  for X in text[6]])
+        
+        self.activator, self.d_activator = lookup_activator(text[0][0])
+        self.stride  = data_t
+        self.padding = data_p
+        self.weight = data_w.reshape(data_s)
+        self.bias = data_b
 
     def save(self):
-        #text_l = lookup_class_name(Layer_convolutional)
         text_a = lookup_name(self.activator)
-        text_s = ",".join([str(X)  for X in self.weight.shape])
+        text_s = ",".join([str(X)  for X in self.shape])
+        text_t = str(self.stride)
+        text_p = str(self.padding)
+        text_o = ",".join([str(X)  for X in self.out_shape])
         text_w = ",".join([str(X)  for X in self.weight.flatten()])
-        text_b = ",".join([str(X)  for X in self.bias.copy()]) # remove .copy() ? It's also in layer_normal
-        return f"{text_a}|{text_s}|{text_w}|{text_b}"
+        text_b = ",".join([str(X)  for X in self.bias])
+        return f"{text_a}|{text_s}|{text_t}|{text_p}|{text_o}|{text_w}|{text_b}"
 
     def display(self):
         pass

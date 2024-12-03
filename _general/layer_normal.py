@@ -31,7 +31,7 @@ class Layer:
         text_a = lookup_name(self.activator)
         text_s = ",".join([str(X)  for X in self.weight.shape])
         text_w = ",".join([str(X)  for X in self.weight.flatten()])
-        text_b = ",".join([str(X)  for X in self.bias.copy()])
+        text_b = ",".join([str(X)  for X in self.bias])
         return f"{text_a}|{text_s}|{text_w}|{text_b}"
 
     def display(self, meta=True, main=False, output=False, d=False):
