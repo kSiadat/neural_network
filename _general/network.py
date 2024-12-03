@@ -13,15 +13,6 @@ class Network:
         else:
             self.load(load_path)
 
-    """
-    def __init__1(self, shape, activator, random_range, loss_func, load_path=None):
-        if load_path is None:
-            self.layer = [Layer(shape[x], shape[x-1], activator[x-1], random_range[x-1])  for x in range(1, len(shape))]
-            self.loss_function, self.d_loss_function = lookup_function(loss_func)
-        else:
-            self.load(load_path)
-    """
-
     def save(self, path):
         loss_text = lookup_name(self.loss_function) + "\n"
         text = loss_text + "\n".join([f"{lookup_class_name(type(X))}/{X.save()}"  for X in self.layer])
