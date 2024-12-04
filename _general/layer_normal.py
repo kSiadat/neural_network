@@ -53,7 +53,7 @@ class Layer:
             self.output[x] = self.activator(self.output[x])
         return self.output
 
-    def backpropagate(self, inp, gradient):
+    def backpropagate_old(self, inp, gradient): # incorrect
         d_z = empty(self.output.shape)
         for x in range(len(d_z)):
             d_z[x] = self.d_activator(self.output[x])
@@ -62,6 +62,17 @@ class Layer:
         self.d_weight = self.d_weight + (d_z_weight * inp)
         self.d_bias = self.d_bias + d_z
         return self.get_all_gradients()
+
+    def backpropagate(self, inp, gradient):
+        d_z = empty(self.output.shape)
+        for x in range(len(d_z)):
+            d_z[x] = self.d_activator(self.output[x])
+        d_z = d_z * gradient
+        d_z_wide = d_z.repeat(self.weight.shape[1]).reshape(self.weight.shape)
+        self.d_weight = self.d_weight + (d_z_wide * inp)
+        self.d_bias = self.d_bias + d_z
+        inp_gradient = (d_z_wide * self.weight).sum(axis=0)
+        return inp_gradient
 
     def get_all_gradients(self):
         return self.d_weight.sum(axis=0)
