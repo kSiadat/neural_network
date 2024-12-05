@@ -62,18 +62,29 @@ class Layer_convolutional(Layer):
         pass
 
     def evaluate(self, inp):
-        output = zeros(self.out_shape)
+        self.output = zeros(self.out_shape)
         for f in range(self.shape[0]):
             for x in range(self.out_shape[0]):
                 for y in range(self.out_shape[1]):
                     corner = [x * self.stride, y * self.stride]
                     sub_inp = inp[corner[0]:corner[0]+self.shape[1], corner[1]:corner[1]+self.shape[2]]
                     multiplied = sub_inp * self.weight[f]
-                    output[x][y][f] = self.activator(multiplied.sum() + self.bias[f])
-        return output
+                    self.output[x][y][f] = self.activator(multiplied.sum() + self.bias[f])
+        return self.output
 
     def backpropagate(self, inp, gradient):
-        pass
+        inp_gradient = zeros(inp.shape)
+        for x in range(self.out_shape[0]):
+            for y in range(self.out_shape[1]):
+                for z in range(self.out_shape[2]):
+                    d_z = self.d_activator(self.output[x][y][z]) * gradient[x][y][z]
+                    i = [x * self.stride, y * self.stride]
+                    d = [self.shape[1], self.shape[2]]
+                    sub_inp = inp[i[0]:i[0]+d[0], i[1]:i[1]+d[1]]
+                    self.d_weight[z] = self.d_weight[z] + (d_z * sub_inp)
+                    self.d_bias[z] = self.d_bias[z] + d_z
+                    inp_gradient[i[0]:i[0]+d[0], i[1]:i[1]+d[1]] = inp_gradient[i[0]:i[0]+d[0], i[1]:i[1]+d[1]] + (d_z * self.weight[z])
+        return inp_gradient
 
     def get_all_gradients(self):
         pass
