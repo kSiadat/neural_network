@@ -57,17 +57,17 @@ class Layer_convolutional(Layer):
         return f"{text_a}|{text_s}|{text_t}|{text_p}|{text_o}|{text_w}|{text_b}"
 
     def pad(self, inp):
-        return pad(inp, [[self.padding, self.padding], [self.padding, self.padding],[0, 0]])
+        if self.padding > 0:
+            return pad(inp, [[self.padding, self.padding], [self.padding, self.padding],[0, 0]])
+        return inp
 
     def unpad(self, inp):
-        return inp[self.padding:-self.padding, self.padding:-self.padding]
+        if self.padding > 0:
+            return inp[self.padding:-self.padding, self.padding:-self.padding]
+        return inp
 
     def evaluate(self, inp):
-        if self.padding > 0:
-            new_inp = self.pad(inp)
-            print(new_inp)
-        else:
-            new_inp = inp
+        new_inp = self.pad(inp)
         self.output = zeros(self.out_shape)
         for f in range(self.shape[0]):
             for x in range(self.out_shape[0]):
@@ -79,15 +79,11 @@ class Layer_convolutional(Layer):
         return self.output
 
     def backpropagate(self, inp, gradient):
-        if self.padding > 0:
-            new_inp = self.pad(inp)
-        else:
-            new_inp = inp
+        new_inp = self.pad(inp)
         inp_gradient = zeros(new_inp.shape)
         for x in range(self.out_shape[0]):
             for y in range(self.out_shape[1]):
                 for z in range(self.out_shape[2]):
-                    print("hi", x, y, z, self.output.shape, gradient.shape)
                     d_z = self.d_activator(self.output[x][y][z]) * gradient[x][y][z]
                     i = [x * self.stride, y * self.stride]
                     d = [self.shape[1], self.shape[2]]

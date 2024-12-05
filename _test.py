@@ -18,7 +18,7 @@ inp = array([[[1], [2], [3]],
 """
 print(f"input:\n{inp.reshape(inp.shape[:2])}")
 layer_data = [
-        ["convolutional", [[4, 4, 1], [2, 3, 3, 1], 1, 1, "relu", 1]],
+        ["convolutional", [[4, 4, 1], [2, 3, 3, 1], 1, 0, "relu", 1]],
         ]
 network = Network(layer_data, "squared")
 network.save("test")
