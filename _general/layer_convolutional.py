@@ -1,4 +1,4 @@
-from numpy import array, random, zeros
+from numpy import array, pad, random, zeros
 
 from .activators import lookup_activator, lookup_name
 from .layer_normal import Layer
@@ -56,27 +56,45 @@ class Layer_convolutional(Layer):
         text_b = ",".join([str(X)  for X in self.bias])
         return f"{text_a}|{text_s}|{text_t}|{text_p}|{text_o}|{text_w}|{text_b}"
 
+    def pad(self, inp):
+        return pad(inp, [[self.padding, self.padding], [self.padding, self.padding],[0, 0]])
+
+    def unpad(self, inp):
+        return inp[self.padding:-self.padding, self.padding:-self.padding]
+
     def evaluate(self, inp):
+        if self.padding > 0:
+            new_inp = self.pad(inp)
+            print(new_inp)
+        else:
+            new_inp = inp
         self.output = zeros(self.out_shape)
         for f in range(self.shape[0]):
             for x in range(self.out_shape[0]):
                 for y in range(self.out_shape[1]):
                     corner = [x * self.stride, y * self.stride]
-                    sub_inp = inp[corner[0]:corner[0]+self.shape[1], corner[1]:corner[1]+self.shape[2]]
+                    sub_inp = new_inp[corner[0]:corner[0]+self.shape[1], corner[1]:corner[1]+self.shape[2]]
                     multiplied = sub_inp * self.weight[f]
                     self.output[x][y][f] = self.activator(multiplied.sum() + self.bias[f])
         return self.output
 
     def backpropagate(self, inp, gradient):
-        inp_gradient = zeros(inp.shape)
+        if self.padding > 0:
+            new_inp = self.pad(inp)
+        else:
+            new_inp = inp
+        inp_gradient = zeros(new_inp.shape)
         for x in range(self.out_shape[0]):
             for y in range(self.out_shape[1]):
                 for z in range(self.out_shape[2]):
+                    print("hi", x, y, z, self.output.shape, gradient.shape)
                     d_z = self.d_activator(self.output[x][y][z]) * gradient[x][y][z]
                     i = [x * self.stride, y * self.stride]
                     d = [self.shape[1], self.shape[2]]
-                    sub_inp = inp[i[0]:i[0]+d[0], i[1]:i[1]+d[1]]
+                    sub_inp = new_inp[i[0]:i[0]+d[0], i[1]:i[1]+d[1]]
                     self.d_weight[z] = self.d_weight[z] + (d_z * sub_inp)
                     self.d_bias[z] = self.d_bias[z] + d_z
                     inp_gradient[i[0]:i[0]+d[0], i[1]:i[1]+d[1]] = inp_gradient[i[0]:i[0]+d[0], i[1]:i[1]+d[1]] + (d_z * self.weight[z])
+        if self.padding > 0:
+            inp_gradient = self.unpad(inp_gradient)
         return inp_gradient

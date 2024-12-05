@@ -24,17 +24,17 @@ train_img, train_lab, test_img, test_lab = reader.read_all()
 train = True
 
 rate = 0.001
-epochs = 10000
+epochs = 100000
 sample_size = 20
 
-interval = 100
-test_interval = 1000
+interval = 1000
+test_interval = 10000
 test_sample_size = 0
 
 load = True
-load_path = "mnist_auto-save"
+load_path = "mnist_auto-save_1_2"
 save = True
-save_path = "mnist_auto-save_1_2"
+save_path = "mnist_auto-save_1_3"
 # end settings
 
 if load:
