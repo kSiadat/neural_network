@@ -31,10 +31,10 @@ interval = 100
 test_interval = 1000
 test_sample_size = 0
 
-load = False
-load_path = "mnist"
+load = True
+load_path = "mnist_auto-save"
 save = True
-save_path = "mnist_auto-save"
+save_path = "mnist_auto-save_1_2"
 # end settings
 
 if load:

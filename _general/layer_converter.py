@@ -32,8 +32,5 @@ class Layer_converter(Layer):
     def backpropagate(self, inp, gradient):
         return gradient.reshape(inp.shape)
 
-    def get_all_gradients(self):
-        return None
-
     def adjust(self, rate):
         return None

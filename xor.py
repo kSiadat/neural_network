@@ -11,7 +11,7 @@ rate = 0.01
 epochs = 10000
 interval = 1000
 
-load = True
+load = False
 load_path = "xor"
 save = True
 save_path = "xor_auto-save"

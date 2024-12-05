@@ -48,16 +48,16 @@ test_label = concatenate((all_label[40:50], all_label[90:100], all_label[140:150
 
 
 # settings
-train = True
+train = False
 
 rate = 0.05
 epochs = 5000
 interval = 1000
 
 load = True
-load_path = "iris"
+load_path = "iris_auto-save_3"
 save = False
-save_path = "iris_auto-save"
+save_path = "iris_auto-save_3"
 # end settings
 
 if load:
@@ -71,7 +71,7 @@ else:
 
 if train:
     test_loss, test_error = full_test()
-    print(f"0:\t{test_error.round(2)}\t{test_loss.mean().round(4)}\t{test_loss.mean(axis=0).round(4)}")
+    print(f"0:\t{test_error.round(3)}\t{test_loss.mean().round(4)}\t{test_loss.mean(axis=0).round(4)}")
 
     for x in range(epochs):
         answer = network.epoch(train_data, train_label, rate)
@@ -79,15 +79,15 @@ if train:
             train_loss = network.loss_function(train_label, answer).mean(axis=0)
             train_error = error_rate(train_label, answer)
             test_loss, test_error = full_test()
-            print(f"{x + 1}:\t{train_error.round(3)}\t{train_loss.mean().round(4)}\t{train_loss.round(4)}\t{test_error.round(2)}\t{test_loss.mean().round(4)}\t{test_loss.mean(axis=0).round(4)}")
+            print(f"{x + 1}:\t{train_error.round(3)}\t{train_loss.mean().round(4)}\t{train_loss.round(4)}\t{test_error.round(3)}\t{test_loss.mean().round(4)}\t{test_loss.mean(axis=0).round(4)}")
 
     if save:
         network.save(save_path)
 
 else:
     test_loss, test_error = full_test()
-    print(f"test:\t{test_error.round(2)}\t{test_loss.mean().round(4)}\t{test_loss.mean(axis=0).round(4)}")
+    print(f"test:\t{test_error.round(3)}\t{test_loss.mean().round(4)}\t{test_loss.mean(axis=0).round(4)}")
     answer = network.epoch_test(train_data)
     loss = network.loss_function(train_label, answer)
     error = error_rate(train_label, answer)
-    print(f"train:\t{error.round(2)}\t{loss.mean().round(4)}\t{loss.mean(axis=0).round(4)}")
+    print(f"train:\t{error.round(3)}\t{loss.mean().round(4)}\t{loss.mean(axis=0).round(4)}")

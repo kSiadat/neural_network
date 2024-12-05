@@ -64,9 +64,6 @@ class Layer:
         inp_gradient = (d_z_wide * self.weight).sum(axis=0)
         return inp_gradient
 
-    def get_all_gradients(self):
-        return self.d_weight.sum(axis=0)
-
     def adjust(self, rate):
         self.weight = self.weight - (self.d_weight * rate)
         self.bias = self.bias - (self.d_bias * rate)

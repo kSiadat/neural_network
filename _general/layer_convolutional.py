@@ -1,7 +1,6 @@
 from numpy import array, random, zeros
 
 from .activators import lookup_activator, lookup_name
-#from .layer_lookup import lookup_name as lookup_class_name
 from .layer_normal import Layer
 
 
@@ -17,7 +16,6 @@ class Layer_convolutional(Layer):
             self.weight = generator.uniform(-random_range, random_range, self.shape)
             self.bias   = generator.uniform(-random_range, random_range, [self.shape[0]])
 
-            #self.inp_shape = inp_shape
             self.out_shape = array([
                 int(((inp_shape[0] - self.shape[1] + (2 * padding)) / stride) + 1),
                 int(((inp_shape[1] - self.shape[2] + (2 * padding)) / stride) + 1),
@@ -58,9 +56,6 @@ class Layer_convolutional(Layer):
         text_b = ",".join([str(X)  for X in self.bias])
         return f"{text_a}|{text_s}|{text_t}|{text_p}|{text_o}|{text_w}|{text_b}"
 
-    def display(self):
-        pass
-
     def evaluate(self, inp):
         self.output = zeros(self.out_shape)
         for f in range(self.shape[0]):
@@ -85,9 +80,3 @@ class Layer_convolutional(Layer):
                     self.d_bias[z] = self.d_bias[z] + d_z
                     inp_gradient[i[0]:i[0]+d[0], i[1]:i[1]+d[1]] = inp_gradient[i[0]:i[0]+d[0], i[1]:i[1]+d[1]] + (d_z * self.weight[z])
         return inp_gradient
-
-    def get_all_gradients(self):
-        pass
-
-    def adjust(self, rate):
-        pass
