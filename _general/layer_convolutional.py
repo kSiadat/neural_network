@@ -83,9 +83,9 @@ class Layer_convolutional(Layer):
         inp_gradient = zeros(new_inp.shape)
         for x in range(self.out_shape[0]):
             for y in range(self.out_shape[1]):
+                i = [x * self.stride, y * self.stride]
                 for z in range(self.out_shape[2]):
                     d_z = self.d_activator(self.output[x][y][z]) * gradient[x][y][z]
-                    i = [x * self.stride, y * self.stride]
                     d = [self.shape[1], self.shape[2]]
                     sub_inp = new_inp[i[0]:i[0]+d[0], i[1]:i[1]+d[1]]
                     self.d_weight[z] = self.d_weight[z] + (d_z * sub_inp)

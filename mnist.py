@@ -21,7 +21,7 @@ reader = Mnist_reader(main_path)
 train_img, train_lab, test_img, test_lab = reader.read_all()
 
 # settings
-train = True
+train = False
 
 rate = 0.001
 epochs = 100000
@@ -32,9 +32,9 @@ test_interval = 10000
 test_sample_size = 0
 
 load = True
-load_path = "mnist_auto-save_1_2"
-save = True
-save_path = "mnist_auto-save_1_3"
+load_path = "mnist"
+save = False
+save_path = "mnist_auto-save"
 # end settings
 
 if load:
@@ -44,6 +44,16 @@ else:
         ["normal", [784, 350, "relu", 1]],
         ["normal", [350, 10, "nothing", 1]],
         ]
+    """
+    layer_data = [
+        ["convolutional", [[28, 28, 1], [4, 5, 5, 1], 1, 0, 1]],
+        ["pooling", [[24, 24, 4], 2]],
+        ["convolutional", [[12, 12, 4], [4, 3, 3, 4], 1, 0, 1]],
+        ["pooling", [[10, 10, 4], 2]],
+        ["converter", [[5, 5, 4], [100]],
+        ["normal", [100, 10, "nothing", 1]],
+        ]
+    """
     network = Network(layer_data, "softmax")
 
 if train:
