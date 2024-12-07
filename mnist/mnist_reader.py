@@ -14,7 +14,7 @@ class Mnist_reader:
         self.test_image_path = f"{main_path}\\t10k-images.idx3-ubyte"
         self.test_label_path = f"{main_path}\\t10k-labels.idx1-ubyte"
 
-    def read_pair(self, image_path, label_path, flat=True):
+    def read_pair(self, image_path, label_path, dimension):
         labels = []
         with open(label_path, "rb") as file:
             magic, size, = unpack(">II", file.read(8))
@@ -30,17 +30,19 @@ class Mnist_reader:
             if magic != 2051:
                 raise ValueError(f"Magic number mismatch, expected 2051 got {magic}")
             image_data = asarray(py_array("B", file.read()))
-        if flat:
+        if dimension == 1:
             images = image_data.reshape(len(image_data) // 784, 784)
-        else:
+        elif dimension == 2:
             images = image_data.reshape([len(image_data) // 784, 28, 28])
+        elif dimension == 3:
+            images = image_data.reshape([len(image_data) // 784, 28, 28, 1])
         images = images / 255
         
         return images, labels
 
-    def read_all(self, flat=True):
-        train_image, train_label = self.read_pair(self.train_image_path, self.train_label_path, flat)
-        test_image, test_label = self.read_pair(self.test_image_path, self.test_label_path, flat)
+    def read_all(self, dimension):
+        train_image, train_label = self.read_pair(self.train_image_path, self.train_label_path, dimension)
+        test_image, test_label = self.read_pair(self.test_image_path, self.test_label_path, dimension)
         return train_image, train_label, test_image, test_label
 
 
@@ -65,5 +67,5 @@ def show_random_images(amount, image_set, label_set):
 if __name__ == "__main__":
     main_path = "data"
     reader = Mnist_reader(main_path)
-    train_img, train_lab, test_img, test_lab = reader.read_all(False)
+    train_img, train_lab, test_img, test_lab = reader.read_all(2)
     show_random_images(10, train_img, train_lab)

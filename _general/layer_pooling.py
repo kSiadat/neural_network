@@ -17,13 +17,18 @@ class Layer_pooling(Layer):
         return None
 
     def load(self, text):
-        self.factor = int(text)
+        text = text.split("|")
+        self.size = int(text[0])
+        text_o = array([int(X)  for X in text[1].split(",")])
 
     def save(self):
-        return str(self.factor)
+        text_s = str(self.size)
+        text_o = ",".join([str(X)  for X in self.out_shape])
+        return f"{text_s}|{text_o}"
 
     def display(self):
-        print(self.factor)
+        print(f"kernel size:\n{self.size}")
+        print(f"output shape:\n{self.out_shape}")
 
     def evaluate(self, inp):
         self.output = empty(self.out_shape)
@@ -35,7 +40,8 @@ class Layer_pooling(Layer):
         return self.output
 
     def backpropagate(self, inp, gradient):
-        return gradient.repeat(self.size, axis=0).repeat(self.size, axis=1)
+        out = gradient.repeat(self.size, axis=0).repeat(self.size, axis=1)
+        return out
 
     def adjust(self, rate):
         return None

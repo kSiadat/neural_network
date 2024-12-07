@@ -91,6 +91,5 @@ class Layer_convolutional(Layer):
                     self.d_weight[z] = self.d_weight[z] + (d_z * sub_inp)
                     self.d_bias[z] = self.d_bias[z] + d_z
                     inp_gradient[i[0]:i[0]+d[0], i[1]:i[1]+d[1]] = inp_gradient[i[0]:i[0]+d[0], i[1]:i[1]+d[1]] + (d_z * self.weight[z])
-        if self.padding > 0:
-            inp_gradient = self.unpad(inp_gradient)
+        inp_gradient = self.unpad(inp_gradient)
         return inp_gradient

@@ -27,7 +27,8 @@ class Layer_converter(Layer):
         print(f"{self.inp_shape} -> {self.out_shape}")
 
     def evaluate(self, inp):
-        return inp.reshape(self.out_shape)
+        self.output = inp.reshape(self.out_shape)
+        return self.output
 
     def backpropagate(self, inp, gradient):
         return gradient.reshape(inp.shape)
