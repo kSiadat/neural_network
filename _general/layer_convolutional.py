@@ -66,7 +66,7 @@ class Layer_convolutional(Layer):
             return inp[self.padding:-self.padding, self.padding:-self.padding]
         return inp
 
-    def evaluate(self, inp):
+    def evaluate_1(self, inp):
         new_inp = self.pad(inp)
         self.output = zeros(self.out_shape)
         for f in range(self.shape[0]):
@@ -76,6 +76,24 @@ class Layer_convolutional(Layer):
                     sub_inp = new_inp[corner[0]:corner[0]+self.shape[1], corner[1]:corner[1]+self.shape[2]]
                     multiplied = sub_inp * self.weight[f]
                     self.output[x][y][f] = self.activator(multiplied.sum() + self.bias[f])
+        return self.output
+
+    def evaluate(self, inp):
+        new_inp = self.pad(inp)
+        self.output = zeros(self.out_shape)
+        for x in range(len(self.bias)):
+            self.output[:,:,x] += self.bias[x]
+        snap = [inp.shape[0] - self.shape[1] + 1, inp.shape[1] - self.shape[2] + 1]
+        for x in range(self.shape[1]):
+            for y in range(self.shape[2]):
+                sub_inp = new_inp[x:x+snap[0], y:y+snap[1]]
+                for z in range(self.shape[0]):
+                    multiplied = (sub_inp * self.weight[z][x][y]).sum(axis=2)
+                    self.output[:,:,z] += multiplied
+        for x in range(self.out_shape[0]):
+            for y in range(self.out_shape[1]):
+                for z in range(self.out_shape[2]):
+                    self.output[x][y][z] = self.activator(self.output[x][y][z])
         return self.output
 
     def backpropagate(self, inp, gradient):

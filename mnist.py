@@ -21,20 +21,20 @@ reader = Mnist_reader(main_path)
 train_img, train_lab, test_img, test_lab = reader.read_all(3)
 
 # settings
-train = True
+train = False
 
-rate = 0.001
-epochs = 1000
+rate = 0.00001
+epochs = 100
 sample_size = 20
 
-interval = 10
-test_interval = 100
-test_sample_size = 1000
+interval = 1
+test_interval = 1
+test_sample_size = 100
 
 load = False
 load_path = "mnist"
-save = True
-save_path = "mnist_auto-save"
+save = False
+save_path = "mnist_2"
 # end settings
 
 if load:
@@ -87,6 +87,13 @@ if train:
         network.save(save_path)
 
 else:
+    print("start")
+    for x in range(10):
+        test_loss, test_error = part_test()
+        if (x + 1) % 1 == 0:
+            print(x + 1)
+    """
     loss, error = full_test()
     print("error\tloss\tloss")
     print(f"{error}\t{loss.mean().round(4)}\t{loss.mean(axis=0).round(4)}")
+    """
