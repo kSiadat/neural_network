@@ -1,39 +1,23 @@
 from numpy import array
 
 from _general.network import Network
-from _general.layer_convolutional import Layer_convolutional
+from _general.layer_pooling import Layer_pooling
+
 
 image = array([
-    [[1, 1], [2, 1], [3, 1], [4, 1]],
-    [[2, 1], [4, 1], [6, 1], [8, 1]],
-    [[3, 1], [6, 1], [9, 1], [12,1]],
-    [[4, 1], [8, 1], [12,1], [16,1]],
-    ])
-
-filt = array([
-    [
-    [[1, 2], [3, 4]],
-    [[3, 4], [5, 6]],
-    ],
-    [
-    [[1, -1], [1, -1]],
-    [[1, -1], [1, -1]],
-    ],
-    [
-    [[0, 0], [0, 0]],
-    [[0, 0], [0, 0]],
-    ]
+    [[1, 1], [2, 2], [3, 2], [4, 1]],
+    [[2, 0], [3, 0], [4, 0], [5, 0]],
+    [[3, 0], [4, 0], [5, 0], [6, 0]],
+    [[4, 1], [5, 2], [6, 2], [7, 1]],
     ])
 
 gradient = array([
-    [[1], [-1]],
-    [[-1], [1]],
+    [[1, 5], [2, 5]],
+    [[3, 5], [4, 5]],
     ])
 
-layer = Layer_convolutional(image.shape, filt.shape, 1, 0, "relu", 1)
-out1 = layer.evaluate(image)
-out2 = layer.evaluate_2(image)
-print(f"out1 == out2:\n{out1 == out2}\n")
-print(f"out1:\n{out1}\n")
-print(f"out2:\n{out2}\n")
-print(f"out1 - out2:\n{out1 - out2}\n")
+layer = Layer_pooling([4, 4, 2], 2)
+output = layer.evaluate(image)
+print(output)
+backprop = layer.backpropagate(image, gradient)
+print(backprop)

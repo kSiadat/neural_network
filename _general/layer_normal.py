@@ -48,15 +48,11 @@ class Layer:
 
     def evaluate(self, inp):
         self.output = self.weight * inp
-        self.output = self.output.sum(axis=1) + self.bias
-        for x in range(len(self.output)):
-            self.output[x] = self.activator(self.output[x])
+        self.output = self.activator(self.output.sum(axis=1) + self.bias)
         return self.output
 
     def backpropagate(self, inp, gradient):
-        d_z = empty(self.output.shape)
-        for x in range(len(d_z)):
-            d_z[x] = self.d_activator(self.output[x])
+        d_z = self.d_activator(self.output)
         d_z = d_z * gradient
         d_z_wide = d_z.repeat(self.weight.shape[1]).reshape(self.weight.shape)
         self.d_weight = self.d_weight + (d_z_wide * inp)

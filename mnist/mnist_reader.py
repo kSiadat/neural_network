@@ -68,4 +68,5 @@ if __name__ == "__main__":
     main_path = "data"
     reader = Mnist_reader(main_path)
     train_img, train_lab, test_img, test_lab = reader.read_all(2)
-    show_random_images(10, train_img, train_lab)
+    #show_random_images(10, train_img, train_lab)
+    print(train_img[0])

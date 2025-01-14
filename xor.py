@@ -11,9 +11,9 @@ rate = 0.01
 epochs = 10000
 interval = 1000
 
-load = False
+load = True
 load_path = "xor"
-save = True
+save = False
 save_path = "xor_auto-save"
 
 def print_test(x, data, label):

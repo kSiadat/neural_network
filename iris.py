@@ -48,16 +48,16 @@ test_label = concatenate((all_label[40:50], all_label[90:100], all_label[140:150
 
 
 # settings
-train = False
+train = True
 
 rate = 0.05
 epochs = 5000
 interval = 1000
 
-load = True
-load_path = "iris_auto-save_3"
+load = False
+load_path = "iris"
 save = False
-save_path = "iris_auto-save_3"
+save_path = "iris_auto-save"
 # end settings
 
 if load:
@@ -69,6 +69,7 @@ else:
         ]
     network = Network(layer_data, "softmax")
 
+print("epoch\terror\tloss\tloss")
 if train:
     test_loss, test_error = full_test()
     print(f"0:\t{test_error.round(3)}\t{test_loss.mean().round(4)}\t{test_loss.mean(axis=0).round(4)}")

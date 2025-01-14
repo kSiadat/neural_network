@@ -16,45 +16,51 @@ def part_test():
     return loss, error
 
 
-main_path = "mnist\\data"
-reader = Mnist_reader(main_path)
-train_img, train_lab, test_img, test_lab = reader.read_all(3)
-
 # settings
-train = False
+train = True
 
-rate = 0.00001
-epochs = 100
+rate = 0.001
+epochs = 1000
 sample_size = 20
 
-interval = 1
-test_interval = 1
-test_sample_size = 100
+interval = 100
+test_interval = 100
+test_sample_size = 0
 
 load = False
 load_path = "mnist"
 save = False
-save_path = "mnist_2"
+save_path = "mnist_conv_4-6"
+
+convolutional = False
 # end settings
+
+
+main_path = "mnist\\data"
+reader = Mnist_reader(main_path)
+if convolutional:
+    dimensions = 3
+else:
+    dimensions = 1
+train_img, train_lab, test_img, test_lab = reader.read_all(dimensions)
 
 if load:
     network = Network(None, None, load_path)
 else:
-    """
-    layer_data = [
-        ["normal", [784, 350, "relu", 1]],
-        ["normal", [350, 10, "nothing", 1]],
-        ]
-    """
-    layer_data = [
-        ["convolutional", [[28, 28, 1], [4, 5, 5, 1], 1, 0, "relu", 1]],
-        ["pooling", [[24, 24, 4], 2]],
-        ["convolutional", [[12, 12, 4], [4, 3, 3, 4], 1, 0, "relu", 1]],
-        ["pooling", [[10, 10, 4], 2]],
-        ["converter", [[5, 5, 4], [100]]],
-        ["normal", [100, 10, "nothing", 1]],
-        ]
-    
+    if not convolutional:
+        layer_data = [
+            ["normal", [784, 350, "relu", 1]],
+            ["normal", [350, 10, "nothing", 1]],
+            ]
+    else:
+        layer_data = [
+            ["convolutional", [[28, 28, 1], [4, 5, 5, 1], 1, 0, "relu", 1]],
+            ["pooling", [[24, 24, 4], 2]],
+            ["convolutional", [[12, 12, 4], [6, 3, 3, 4], 1, 0, "relu", 1]],
+            ["pooling", [[10, 10, 6], 2]],
+            ["converter", [[5, 5, 6], [150]]],
+            ["normal", [150, 10, "nothing", 1]],
+            ]
     network = Network(layer_data, "softmax")
 
 if train:
@@ -87,13 +93,6 @@ if train:
         network.save(save_path)
 
 else:
-    print("start")
-    for x in range(10):
-        test_loss, test_error = part_test()
-        if (x + 1) % 1 == 0:
-            print(x + 1)
-    """
     loss, error = full_test()
     print("error\tloss\tloss")
     print(f"{error}\t{loss.mean().round(4)}\t{loss.mean(axis=0).round(4)}")
-    """
