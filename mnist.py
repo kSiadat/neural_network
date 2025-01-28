@@ -28,9 +28,9 @@ test_interval = 100
 test_sample_size = 0
 
 load = False
-load_path = "mnist"
-save = False
-save_path = "mnist_conv_4-6"
+load_path = "mnist_conv_4-6"
+save = True
+save_path = "mnist_auto-save"
 
 convolutional = False
 # end settings

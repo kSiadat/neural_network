@@ -56,7 +56,7 @@ interval = 1000
 
 load = False
 load_path = "iris"
-save = False
+save = True
 save_path = "iris_auto-save"
 # end settings
 

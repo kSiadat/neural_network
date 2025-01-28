@@ -90,12 +90,6 @@ class Layer_convolutional(Layer):
                 for z in range(self.shape[0]):
                     multiplied = (sub_inp * self.weight[z][x][y]).sum(axis=2)
                     self.output[:,:,z] += multiplied
-        """
-        for x in range(self.out_shape[0]):
-            for y in range(self.out_shape[1]):
-                for z in range(self.out_shape[2]):
-                    self.output[x][y][z] = self.activator(self.output[x][y][z])
-        """
         self.output = self.activator(self.output)
         return self.output
 

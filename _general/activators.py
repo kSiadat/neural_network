@@ -1,34 +1,36 @@
-from math import e
+#from math import e
 from numpy import exp
 
 
-def relu_old(z):
+""" old non-vectorised functions
+def relu(z):
     if z > 0:
         return z
     return 0
 
-def d_relu_old(a):
+def d_relu(a):
     if a > 0:
         return 1
     return 0
 
-def leaky_relu_old(z):
+def leaky_relu(z):
     if z > 0:
         return z
     return z * 0.01
 
-def d_leaky_relu_old(a):
+def d_leaky_relu(a):
     if a > 0:
         return 1
     return 0.01
 
-def sigmoid_old(z):
+def sigmoid(z):
     if z < -700:
         return 0
     return 1 / (1 + e**-z)
 
-def d_sigmoid_old(a):
+def d_sigmoid(a):
     return a * (1 - a)
+"""
 
 def nothing(z):
     return z
